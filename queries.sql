@@ -1,16 +1,16 @@
--- ============================================================
--- 🕵️ Advanced SQL Retrieval Project – The Jaxpax Case Files
+-- 🕵️ Retail Forensics – The Jaxpax Case Files
 -- Author: Joel Mathew
--- Dataset: Jaxpax (Retail Unit Simulator)
+-- Dataset: Jaxpax (Retail Business Simulator)
 -- Tables: Customers, Orders, Products, Employees, Suppliers
 -- ============================================================
--- Each query represents a "case" solved through SQL investigation.
--- Explanations are included as detective-style notes.
+-- Project Theme:
+-- Each query is framed as a "forensic case," investigating
+-- different aspects of the retail business ecosystem.
+-- Findings are documented as forensic conclusions.
 -- ============================================================
 
-
 -- ============================================================
--- Case 1: The Missing Supplier Email
+-- Case 1: Supplier Link Analysis
 -- ------------------------------------------------------------
 -- Question:
 --   Who supplied the fabric used in the Canoe Pack?
@@ -27,9 +27,11 @@ INNER JOIN Product AS pr ON fa.fabcode = pr.prodFabCode
 INNER JOIN Supplier AS su ON fa.FabSupplier = su.SupID
 WHERE pr.ProdDesc = 'Canoe Pack';
 
+--  Finding:
+-- Canoe Pack fabric traced back to supplier; email successfully identified via Product as linking key.
 
 -- ============================================================
--- Case 2: The Price Puzzle
+-- Case 2: Pricing Structure Audit
 -- ------------------------------------------------------------
 -- Task:
 --   Summarize product prices across the catalog:
@@ -46,9 +48,11 @@ SELECT AVG(prodprice) AS average_price,
        COUNT(prodprice) AS Total_product_count
 FROM Product;
 
+--  Finding:
+-- Catalog contains 9 products ranging from$19.99 to $159.99 price, with an overall average of ~56.32.
 
 -- ============================================================
--- Case 3: Orders Under the Lens
+-- Case 3: Order Behavior Profiling
 -- ------------------------------------------------------------
 -- Question:
 --   What is the average product price and total items per order?
@@ -60,9 +64,11 @@ SELECT OrdNum, AVG(price) AS Average_price, COUNT(price) AS Total_Order
 FROM Orderitem
 GROUP BY OrdNum;
 
+--  Finding:
+-- Each order profiled with average price and total items, enabling comparison of small vs. bulk customer orders.
 
 -- ============================================================
--- Case 4: The Top Shipper
+-- Case 4: Shipping Efficiency Review
 -- ------------------------------------------------------------
 -- Task:
 --   Identify the shipper who handled the highest volume of orders.
@@ -77,9 +83,12 @@ FROM Shipper AS Sh
 INNER JOIN Orders O ON Sh.shipID = O.shipID
 GROUP BY ShipCompany;
 
+--  Finding:
+-- United States Postale identified as the busiest shipper, handling 6 orders, showing operational dominance.
+
 
 -- ============================================================
--- Case 5: Orders Greater Than Two
+-- Case 5: High-Volume Orders Detection
 -- ------------------------------------------------------------
 -- Question:
 --   Which orders contain more than 2 products?
@@ -92,9 +101,11 @@ FROM Orderitem
 GROUP BY OrdNum
 HAVING Total_Order > 2;
 
+--  Finding:
+-- Orders with more than 2 products flagged, highlighting high-value or bulk customer purchases.
 
 -- ============================================================
--- Case 6: Minnesota’s Exclusive Orders
+-- Case 6: Regional Supplier Trace
 -- ------------------------------------------------------------
 -- Task:
 --   Find orders with more than one product,
@@ -112,9 +123,11 @@ WHERE s.supstate = 'MN'
 GROUP BY oi.OrdNum
 HAVING COUNT(oi.prodID) > 1;
 
+--  Finding:
+-- Products priced above the average (56.32) identified as potential premium or high-margin items.
 
 -- ============================================================
--- Case 7: Above Average Products
+-- Case 7: Product Pricing Outliers
 -- ------------------------------------------------------------
 -- Task:
 --   List products with prices above the overall average.
@@ -127,10 +140,12 @@ WHERE prodprice > (
     SELECT AVG(prodprice) 
     FROM Product
 );
+--  Finding:
+-- Products priced above the average (56.32) identified as potential premium or high-margin items.
 
 
 -- ============================================================
--- Case 8: The Discount Mystery
+-- Case 8: Discount Impact Analysis
 -- ------------------------------------------------------------
 -- Task:
 --   Show each order’s product ID, discount level, 
@@ -153,12 +168,14 @@ SELECT OrdNum,
        END AS Due_after_discount
 FROM Orderitem;
 
+--  Finding:
+-- Discount rules applied; revenue before vs. after discount quantified to show impact of promotions on sales.
 
 -- ============================================================
 -- Bonus Cases: ProductLine Database
 -- ============================================================
 
--- Case 9: Products from Both Divisions
+-- Case 9: Division Coverage Review
 -- ------------------------------------------------------------
 -- Task:
 --   Retrieve all products from East and West divisions.
@@ -170,9 +187,11 @@ FROM ProductEast
 UNION
 SELECT prodID, ProdDesc
 FROM ProductWest;
+--  Finding:
+-- Combined East (9 products) and West (4 products) yielded 11 unique products after removing duplicates.
 
 
--- Case 10: Common Products Across Divisions
+-- Case 10: Division Overlap Check
 -- ------------------------------------------------------------
 -- Task:
 --   Identify products manufactured in both divisions.
@@ -184,3 +203,5 @@ FROM ProductEast
 INTERSECT
 SELECT prodID, ProdDesc
 FROM ProductWest;
+--  Finding:
+-- Two products found manufactured in both divisions, highlighting overlap in production.
