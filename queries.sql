@@ -15,9 +15,9 @@
 -- Question:
 --   Who supplied the fabric used in the Canoe Pack?
 -- Observation:
---   Fabric and Supplier tables had no direct relationship.
+--   product description ( canoe pack) is in product table which has fabric code,Fabric table has supplier id ,and supplier table has supplier id and supplier details  associated with it
 -- Deduction:
---   Product acted as the missing link between them.
+--   first use Inner Join to combine product and fabric table with column fabric code, so we will get product description id associated to supplier id, and then join fabric table and Supplier table to get the table with product supplier details and product description
 -- Evidence:
 --   Query retrieves supplier email + fabric description.
 -- ============================================================
@@ -73,8 +73,7 @@ GROUP BY OrdNum;
 -- Task:
 --   Identify the shipper who handled the highest volume of orders.
 -- Connection:
---   Shipper table holds company names and IDs.
---   Orders table references ShipID as a foreign key.
+--   Shipper table holds company names and IDs. and Orders table has order details + shipper id, so we will join shipper & Order tables using Inner Join
 -- Conclusion:
 --   United States Postale emerged as the busiest shipper (6 orders).
 -- ============================================================
@@ -111,7 +110,10 @@ HAVING Total_Order > 2;
 --   Find orders with more than one product,
 --   but only if supplied by Minnesota-based suppliers.
 -- Reasoning:
---   No direct link between OrderItem and Supplier.
+--in order item we have product ID & quantity but no product details
+--in product table we have product details with product id
+--In supplier table we have state name,and supplier name
+--   but No direct link between OrderItem and Supplier.
 --   Required chain of joins: OrderItem → Product → Fabric → Supplier.
 -- ============================================================
 SELECT oi.OrdNum, COUNT(oi.prodID) AS TotalProducts
